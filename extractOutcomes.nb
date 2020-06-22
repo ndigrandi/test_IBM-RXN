@@ -1,0 +1,438 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     16636,        430]
+NotebookOptionsPosition[     15300,        399]
+NotebookOutlinePosition[     15692,        415]
+CellTagsIndexPosition[     15649,        412]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Import initial results", "Subsection",
+ CellChangeTimes->{{3.801691073030171*^9, 
+  3.801691091929566*^9}},ExpressionUUID->"0fcb2586-9881-448e-946d-\
+da5e22a1d657"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Directory", "[", "]"}], "<>", "\"\</ibm-rxn/results.csv\>\""}],
+      ",", "\"\<Dataset\>\"", ",", 
+     RowBox[{"\"\<HeaderLines\>\"", "\[Rule]", "1"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.8002801189065733`*^9, 3.800280173964642*^9}, 
+   3.80035124071167*^9, {3.800623906445372*^9, 3.800623909879056*^9}, {
+   3.800641062983639*^9, 3.800641064210105*^9}, 3.800641539292347*^9, 
+   3.8007123227574863`*^9},
+ CellLabel->"In[1]:=",ExpressionUUID->"07b3cf42-9e45-4967-bd02-cf0f89c045c7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Set Authorization Key", "Subsection",
+ CellChangeTimes->{{3.800280396080346*^9, 3.800280399519534*^9}, {
+  3.801691058702577*^9, 
+  3.801691061171507*^9}},ExpressionUUID->"ff687d6a-7bfb-43b3-9b07-\
+61452d0e6466"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"authKey", "="}], 
+  RowBox[{"(*", 
+   RowBox[{"authorization", " ", "key"}], "*)"}], ";"}]], "Input",
+ CellChangeTimes->{{3.800641509932214*^9, 3.800641518182845*^9}, {
+  3.801690991099166*^9, 
+  3.801690999911722*^9}},ExpressionUUID->"1be9e84e-fb10-4697-8eea-\
+49ab363f9deb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Code to get more outcomes", "Subsection",
+ CellChangeTimes->{{3.800280410895936*^9, 
+  3.800280415535696*^9}},ExpressionUUID->"74a77ef0-8821-4ffc-849a-\
+d8b9dfbcea45"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"baseURL", "=", "\"\<rxn.res.ibm.com\>\""}], ";"}]], "Input",
+ CellChangeTimes->{{3.800351295128305*^9, 3.800351317550722*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"94516c8a-2a6c-4e5c-befb-3112b9ad30ef"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"getMoreOutcomes", "[", "rxn_", "]"}], ":=", 
+  RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "rxnClass", ",", "predID", ",", " ", "projID", ",", "getPred", ",", 
+      "attempts", ",", "reactants", ",", "morePreds", ",", "prods", " ", ",", 
+      
+      RowBox[{"newProds", "=", 
+       RowBox[{"{", "}"}]}], ",", "conf", ",", 
+      RowBox[{"success", "=", " ", 
+       RowBox[{"{", "}"}]}], ",", "outcomeFile"}], "}"}], ",", 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"rxnClass", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"data", "[", 
+        RowBox[{"[", "rxn", "]"}], "]"}], "[", "\"\<reaction class\>\"", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"predID", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"data", "[", 
+        RowBox[{"[", "rxn", "]"}], "]"}], "[", "\"\<predictionId\>\"", 
+       "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"projID", " ", "=", " ", 
+      RowBox[{
+       RowBox[{"data", "[", 
+        RowBox[{"[", "rxn", "]"}], "]"}], "[", "\"\<projectId\>\"", "]"}]}], 
+     ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"getPred", "=", 
+      RowBox[{
+       RowBox[{"HTTPRequest", "[", 
+        RowBox[{
+         RowBox[{"URL", "[", 
+          RowBox[{
+          "baseURL", "<>", "\"\</rxn/api/api/v1/predictions/\>\"", "<>", 
+           "predID"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"<|", 
+          RowBox[{
+           RowBox[{"\"\<Method\>\"", "\[Rule]", "\"\<GET\>\""}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"\"\<Headers\>\"", "\[Rule]", 
+            RowBox[{"<|", 
+             RowBox[{
+              RowBox[{
+              "\"\<Content-Type\>\"", "\[Rule]", "\"\<application/json\>\""}],
+               ",", "\[IndentingNewLine]", 
+              RowBox[{"\"\<Authorization\>\"", "\[Rule]", "authKey"}]}], 
+             "|>"}]}]}], "\[IndentingNewLine]", "|>"}]}], "]"}], "//", 
+       RowBox[{
+        RowBox[{"URLExecute", "[", 
+         RowBox[{"#", ",", "\"\<RawJSON\>\""}], "]"}], "&"}]}]}], ";", 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"reactants", "=", 
+      RowBox[{"getPred", "[", 
+       RowBox[{
+       "\"\<payload\>\"", ",", "\"\<request\>\"", ",", "\"\<reactants\>\""}], 
+       "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"Pause", "[", "10", "]"}], ";", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"morePreds", "=", 
+      RowBox[{
+       RowBox[{"HTTPRequest", "[", 
+        RowBox[{
+         RowBox[{"URL", "[", 
+          RowBox[{
+          "baseURL", "<>", 
+           "\"\</rxn/api/api/v1/predictions/prb?predictionId=\>\"", "<>", 
+           "predID", "<>", "\"\<&projectId=\>\"", "<>", "projID"}], "]"}], 
+         ",", "\[IndentingNewLine]", 
+         RowBox[{"<|", 
+          RowBox[{
+           RowBox[{"\"\<Method\>\"", "\[Rule]", "\"\<POST\>\""}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"\"\<Headers\>\"", "\[Rule]", 
+            RowBox[{"<|", 
+             RowBox[{
+              RowBox[{
+              "\"\<Content-Type\>\"", "\[Rule]", "\"\<application/json\>\""}],
+               ",", "\[IndentingNewLine]", 
+              RowBox[{"\"\<Authorization\>\"", "\[Rule]", "authKey"}]}], 
+             "|>"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"\"\<Body\>\"", "\[Rule]", 
+            RowBox[{"ExportString", "[", 
+             RowBox[{
+              RowBox[{"<|", 
+               RowBox[{"\"\<reactants\>\"", "\[Rule]", "reactants"}], "|>"}], 
+              ",", "\"\<JSON\>\""}], "]"}]}]}], "|>"}]}], "]"}], "//", 
+       RowBox[{
+        RowBox[{"URLExecute", "[", 
+         RowBox[{"#", ",", "\"\<RawJSON\>\""}], "]"}], "&"}]}]}], ";", 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"Pause", "[", "10", "]"}], ";", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"getPred", "=", 
+      RowBox[{
+       RowBox[{"HTTPRequest", "[", 
+        RowBox[{
+         RowBox[{"URL", "[", 
+          RowBox[{
+          "baseURL", "<>", "\"\</rxn/api/api/v1/predictions/\>\"", "<>", 
+           "predID"}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"<|", 
+          RowBox[{
+           RowBox[{"\"\<Method\>\"", "\[Rule]", "\"\<GET\>\""}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"\"\<Headers\>\"", "\[Rule]", 
+            RowBox[{"<|", 
+             RowBox[{
+              RowBox[{
+              "\"\<Content-Type\>\"", "\[Rule]", "\"\<application/json\>\""}],
+               ",", "\[IndentingNewLine]", 
+              RowBox[{"\"\<Authorization\>\"", "\[Rule]", "authKey"}]}], 
+             "|>"}]}]}], "|>"}]}], "]"}], "//", 
+       RowBox[{
+        RowBox[{"URLExecute", "[", 
+         RowBox[{"#", ",", "\"\<RawJSON\>\""}], "]"}], "&"}]}]}], ";", 
+     "\[IndentingNewLine]", "\n", 
+     RowBox[{"attempts", " ", "=", " ", 
+      RowBox[{"getPred", "[", 
+       RowBox[{"\"\<payload\>\"", ",", "\"\<attempts\>\""}], "]"}]}], ";", 
+     "\n", 
+     RowBox[{"prods", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"StringSplit", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"attempts", "[", 
+             RowBox[{"[", "#", "]"}], "]"}], "[", "\"\<smiles\>\"", "]"}], 
+           ",", "\"\<>>\>\""}], "]"}], "[", 
+         RowBox[{"[", "2", "]"}], "]"}], "&"}], "/@", 
+       RowBox[{"Range", "[", 
+        RowBox[{"Length", "[", "attempts", "]"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Length", "@", 
+           RowBox[{"StringSplit", "[", 
+            RowBox[{
+             RowBox[{"prods", "[", 
+              RowBox[{"[", "#", "]"}], "]"}], ",", "\"\<.\>\""}], "]"}]}], 
+          ">", "1"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"StringLength", "@", 
+             RowBox[{
+              RowBox[{"StringSplit", "[", 
+               RowBox[{
+                RowBox[{"prods", "[", 
+                 RowBox[{"[", "#", "]"}], "]"}], ",", "\"\<.\>\""}], "]"}], 
+              "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], ">", 
+            RowBox[{"StringLength", "@", 
+             RowBox[{
+              RowBox[{"StringSplit", "[", 
+               RowBox[{
+                RowBox[{"prods", "[", 
+                 RowBox[{"[", "#", "]"}], "]"}], ",", "\"\<.\>\""}], "]"}], 
+              "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+           
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"newProds", ",", 
+             RowBox[{
+              RowBox[{"StringSplit", "[", 
+               RowBox[{
+                RowBox[{"prods", "[", 
+                 RowBox[{"[", "#", "]"}], "]"}], ",", "\"\<.\>\""}], "]"}], 
+              "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"newProds", ",", 
+             RowBox[{
+              RowBox[{"StringSplit", "[", 
+               RowBox[{
+                RowBox[{"prods", "[", 
+                 RowBox[{"[", "#", "]"}], "]"}], ",", "\"\<.\>\""}], "]"}], 
+              "[", 
+              RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"AppendTo", "[", 
+          RowBox[{"newProds", ",", 
+           RowBox[{"prods", "[", 
+            RowBox[{"[", "#", "]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", 
+        "]"}], "&"}], "/@", 
+      RowBox[{"Range", "@", 
+       RowBox[{"Length", "@", "prods"}]}]}], ";", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"conf", " ", "=", " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"attempts", "[", 
+          RowBox[{"[", "#", "]"}], "]"}], "[", "\"\<confidence\>\"", "]"}], 
+        "&"}], "/@", 
+       RowBox[{"Range", "[", 
+        RowBox[{"Length", "[", "attempts", "]"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"prods", "[", 
+           RowBox[{"[", "#", "]"}], "]"}], " ", "\[Equal]", " ", 
+          RowBox[{
+           RowBox[{"StringSplit", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"data", "[", 
+               RowBox[{"[", "rxn", "]"}], "]"}], "[", "\"\<reaction\>\"", 
+              "]"}], ",", "\"\<>>\>\""}], "]"}], "[", 
+           RowBox[{"[", "2", "]"}], "]"}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"AppendTo", "[", 
+          RowBox[{"success", ",", "\"\<Y\>\""}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"AppendTo", "[", 
+          RowBox[{"success", ",", "\"\<N\>\""}], "]"}]}], 
+        "\[IndentingNewLine]", "]"}], "&"}], "/@", 
+      RowBox[{"Range", "[", 
+       RowBox[{"Length", "[", "prods", "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Do", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"outcomeFile", "=", 
+         RowBox[{"OpenAppend", "[", 
+          RowBox[{
+           RowBox[{"Directory", "[", "]"}], "<>", 
+           "\"\</ibm-rxn/more_outcomes.csv\>\""}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"WriteString", "[", 
+         RowBox[{"outcomeFile", ",", 
+          RowBox[{
+           RowBox[{"StringRiffle", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"rxnClass", ",", "projID", ",", "predID", ",", 
+               RowBox[{
+                RowBox[{"data", "[", 
+                 RowBox[{"[", "rxn", "]"}], "]"}], "[", "\"\<reaction\>\"", 
+                "]"}], ",", 
+               RowBox[{"newProds", "[", 
+                RowBox[{"[", "i", "]"}], "]"}], ",", 
+               RowBox[{"conf", "[", 
+                RowBox[{"[", "i", "]"}], "]"}], ",", 
+               RowBox[{"success", "[", 
+                RowBox[{"[", "i", "]"}], "]"}]}], "}"}], ",", "\"\<,\>\""}], 
+            "]"}], "<>", "\"\<\\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"Close", "[", "outcomeFile", "]"}], ";"}], 
+       "\[IndentingNewLine]", ",", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", "1", ",", 
+         RowBox[{"Length", "@", "prods"}]}], "}"}]}], "]"}], ";"}]}], 
+   "\[IndentingNewLine]", "]"}]}]], "Input",
+ CellChangeTimes->CompressedData["
+1:eJwdzjtIAgEAxnFJBx0sgqKneJkO4YOiNYyEsDgJs8YoUYIow8bDwR5DmKA9
+7lCDgoyGClxuCsKyRcGWSKFBI6LFSkSijC617rvh48e3/Xscbtt8g0gk6uQn
+yPlbu23FkUP9FwEN2x8aqJP7LNBujFlhUJx2Qnr1ewnmnVIXDJvLXth/KdmA
+74r4AeyjXTGYoOMszA7pM7C6NZ6DjhfqCZ4x5iJk1IYSTFYoDt533f1By+iN
+T8k7vW73Q5Yc3oULLXIaromXI/Bx8GQfMg9NUShNe85hIaJmoZ2cE0xcXygJ
+XlP7ngqeaqpuLa+x0LsCVT5yE2pfFwWPptIhGJgsCxLBXBTWs+Fj6DHVWZja
+oa4gldSmoDTwdgtDE/lnKPEyZWiV/f7AmQEZJ/y2SqMOPbXPZqgYq3XA2UxJ
+Df8BGNXBYw==
+  "],
+ CellLabel->"In[4]:=",ExpressionUUID->"08d934c2-b66c-41cf-9c41-51de396aedac"],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.80115260349498*^9, 3.801152606108073*^9}, 
+   3.801152978593482*^9},
+ CellLabel->"In[5]:=",ExpressionUUID->"ea0c9add-88f8-431f-a4ba-b4307893d536"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Get more outcomes", "Subsection",
+ CellChangeTimes->{{3.800320643213387*^9, 
+  3.800320646767599*^9}},ExpressionUUID->"6a758d43-eee1-4086-8a1b-\
+55ce0d986fbb"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Directory", "[", "]"}], "<>", 
+     "\"\</ibm-rxn/more_outcomes.csv\>\""}], ",", 
+    RowBox[{"Dataset", "[", 
+     RowBox[{"{", 
+      RowBox[{"{", 
+       RowBox[{
+       "\"\<reaction class\>\"", ",", "\"\<projectId\>\"", ",", 
+        "\"\<predictionId\>\"", ",", "\"\<reaction\>\"", ",", 
+        "\"\<product\>\"", ",", "\"\<confidence\>\"", ",", 
+        "\"\<success\>\""}], "}"}], "}"}], "]"}], ",", "\"\<CSV\>\""}], "]"}],
+   ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"getMoreOutcomes", "[", "#", "]"}], "&"}], "/@", 
+  RowBox[{"Range", "@", 
+   RowBox[{"Length", "@", "data"}]}]}]}], "Input",
+ CellEvaluationLanguage->"Python",
+ CellChangeTimes->{{3.800312714818803*^9, 3.8003127158885612`*^9}, {
+   3.800312953881502*^9, 3.8003130003041153`*^9}, {3.800313117408894*^9, 
+   3.800313330344597*^9}, 3.800313442140706*^9, 3.800320567916819*^9, 
+   3.800320719375499*^9, {3.800320953674909*^9, 3.8003209544918013`*^9}, {
+   3.800351326202159*^9, 3.800351333647249*^9}, {3.800623986594343*^9, 
+   3.8006239912793818`*^9}, {3.800699469449381*^9, 3.800699473525084*^9}, {
+   3.8007115944734983`*^9, 3.800711601245966*^9}, {3.801147268223822*^9, 
+   3.801147276749832*^9}, {3.801691007254238*^9, 
+   3.801691030985505*^9}},ExpressionUUID->"837f5d2f-cf28-4c7c-9413-\
+2c92b930c8c6"]
+}, Open  ]]
+},
+WindowSize->{808, 855},
+WindowMargins->{{4, Automatic}, {Automatic, 4}},
+FrontEndVersion->"12.1 for Mac OS X x86 (64-bit) (March 13, 2020)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"5d2a6ea5-c9f7-4042-bec4-1f8be6d57154"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 170, 3, 54, "Subsection",ExpressionUUID->"0fcb2586-9881-448e-946d-da5e22a1d657"],
+Cell[753, 27, 628, 14, 30, "Input",ExpressionUUID->"07b3cf42-9e45-4967-bd02-cf0f89c045c7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1418, 46, 218, 4, 54, "Subsection",ExpressionUUID->"ff687d6a-7bfb-43b3-9b07-61452d0e6466"],
+Cell[1639, 52, 311, 8, 30, "Input",ExpressionUUID->"1be9e84e-fb10-4697-8eea-49ab363f9deb"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1987, 65, 173, 3, 54, "Subsection",ExpressionUUID->"74a77ef0-8821-4ffc-849a-d8b9dfbcea45"],
+Cell[2163, 70, 239, 4, 30, "Input",ExpressionUUID->"94516c8a-2a6c-4e5c-befb-3112b9ad30ef"],
+Cell[2405, 76, 11082, 274, 1228, "Input",ExpressionUUID->"08d934c2-b66c-41cf-9c41-51de396aedac"],
+Cell[13490, 352, 195, 3, 30, "Input",ExpressionUUID->"ea0c9add-88f8-431f-a4ba-b4307893d536"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13722, 360, 165, 3, 54, "Subsection",ExpressionUUID->"6a758d43-eee1-4086-8a1b-55ce0d986fbb"],
+Cell[13890, 365, 1394, 31, 94, "Input",ExpressionUUID->"837f5d2f-cf28-4c7c-9413-2c92b930c8c6"]
+}, Open  ]]
+}
+]
+*)
+
